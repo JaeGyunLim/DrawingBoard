@@ -3,6 +3,7 @@ package test;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javax.swing.*
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -61,7 +62,7 @@ public class t extends JFrame {
 	 */
 	public t() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("�׸���");
+		setTitle("±×¸²ÆÇ");
 		setBounds(100, 100, 450, 300);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -174,8 +175,29 @@ public class t extends JFrame {
 		btnPINK.setBackground(Color.PINK);
 		toolBar_3.add(btnPINK);
 		
-		JPanel DrawPanel = new JPanel();
-		contentPane.add(DrawPanel, BorderLayout.CENTER);
-	}
-	
+		DrawPanel DrawPanel = new DrawPanel(); 
+		contentPane.add(DrawPanel, BorderLayout.CENTER);    
+	}  
+	class DrawPanel extends JPanel{ 
+		Point start;  Point end; 
+		public DrawPanel(){ 
+			this.addMouseListener(new DrawMouseListener()); 
+		}      
+		class DrawMouseListener implements MouseListener{ 
+			public void mousePressed(MouseEvent e){    
+				start = e.getPoint();   
+			}   
+			public void mouseReleased(MouseEvent e){  
+				end = e.getPoint();    
+				Graphics g = getGraphics();  
+				g.drawLine(start.x, start.y, end.x, end.y);
+			}  
+			public void mouseClicked(MouseEvent e) {       
+			}   
+			public void mouseEntered(MouseEvent e) {      
+			}   
+			public void mouseExited(MouseEvent e) {  
+			}  
+		}
+   }
 }
