@@ -1,41 +1,24 @@
 package test;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.*
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JComboBox;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
-import javax.swing.JMenu;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-
-import java.awt.GridBagLayout;
-
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Color;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.JSplitPane;
+import javax.swing.border.EmptyBorder;
 
 public class t extends JFrame {
 
@@ -62,7 +45,7 @@ public class t extends JFrame {
 	 */
 	public t() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("±×¸²ÆÇ");
+		setTitle("�׸���");
 		setBounds(100, 100, 450, 300);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -175,29 +158,32 @@ public class t extends JFrame {
 		btnPINK.setBackground(Color.PINK);
 		toolBar_3.add(btnPINK);
 		
-		DrawPanel DrawPanel = new DrawPanel(); 
-		contentPane.add(DrawPanel, BorderLayout.CENTER);    
-	}  
-	class DrawPanel extends JPanel{ 
-		Point start;  Point end; 
-		public DrawPanel(){ 
-			this.addMouseListener(new DrawMouseListener()); 
-		}      
-		class DrawMouseListener implements MouseListener{ 
-			public void mousePressed(MouseEvent e){    
-				start = e.getPoint();   
-			}   
-			public void mouseReleased(MouseEvent e){  
-				end = e.getPoint();    
-				Graphics g = getGraphics();  
-				g.drawLine(start.x, start.y, end.x, end.y);
-			}  
-			public void mouseClicked(MouseEvent e) {       
-			}   
-			public void mouseEntered(MouseEvent e) {      
-			}   
-			public void mouseExited(MouseEvent e) {  
-			}  
+		DrawPanel DrawPanel = new DrawPanel();
+		contentPane.add(DrawPanel, BorderLayout.CENTER);
+	}
+	
+	class DrawPanel extends JPanel{
+		Point start;
+		Point end;
+		public DrawPanel(){
+			this.addMouseListener(new DrawMouseListener());
 		}
-   }
+		class DrawMouseListener implements MouseListener{
+			public void mousePressed(MouseEvent e){
+				start = e.getPoint(); 
+			}
+			public void mouseReleased(MouseEvent e){
+				end = e.getPoint(); 
+				Graphics g = getGraphics();
+				g.drawLine(start.x, start.y, end.x, end.y);
+			}
+			public void mouseClicked(MouseEvent e) {
+			}
+			public void mouseEntered(MouseEvent e) {
+			}
+			public void mouseExited(MouseEvent e) {
+			}
+		}
+}
+
 }
