@@ -64,14 +64,13 @@ public class t extends JFrame {
 		
 		MItemColor.addActionListener(new ActionListener()
 		{
-			JColorChooser chooser = new JColorChooser();
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				String cmd = e.getActionCommand();
 				if(cmd.equals("»ö»ó"))
 				{
-					color = chooser.showDialog(null, "Color", Color.BLACK);
+					color = JColorChooser.showDialog(null, "Color", Color.BLACK);
 				}
 			}
 		});
