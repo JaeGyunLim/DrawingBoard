@@ -1,10 +1,12 @@
 package test;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,11 +24,15 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class t extends JFrame {
 
-	private JPanel contentPane;
-	Color color;
+	private JPanel ContentPane;
+	Color color;	//색 지정
+	float bold = 3; //굵기
+	private JTextField TextField; //굵기 변경
 
 	/**
 	 * Launch the application.
@@ -51,17 +57,18 @@ public class t extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("그림판");
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 500, 300);
 		
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
+		JMenuBar MenuBar = new JMenuBar();
+		setJMenuBar(MenuBar);
 		
 		JMenu MenuOption = new JMenu("옵션");
-		menuBar.add(MenuOption);
+		MenuBar.add(MenuOption);
 		
 		JMenuItem MItemColor = new JMenuItem("색상");
 		MenuOption.add(MItemColor);		
 		
+		//옵션 - 색상
 		MItemColor.addActionListener(new ActionListener()
 		{
 			@Override
@@ -74,11 +81,15 @@ public class t extends JFrame {
 				}
 			}
 		});
+		
 		JMenuItem MItemGet = new JMenuItem("불러오기");
 		MenuOption.add(MItemGet);
 		
+		
 		JMenuItem MItemSave = new JMenuItem("저장");
 		MenuOption.add(MItemSave);
+		
+		//저장하기
 		MItemSave.addActionListener(new ActionListener() {
 			
 			@Override
@@ -90,6 +101,8 @@ public class t extends JFrame {
 		
 		JMenuItem MItemExit = new JMenuItem("나가기");
 		MenuOption.add(MItemExit);
+		
+		//옵션 - 나기기 누를 경우 종료
 		MItemExit.addActionListener(new ActionListener() {
 			
 			@Override
@@ -98,13 +111,15 @@ public class t extends JFrame {
 				System.exit(0);
 			}
 		});
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		
+		ContentPane = new JPanel();
+		ContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(ContentPane);
+		ContentPane.setLayout(new BorderLayout(0, 0));
 		
 		JPanel OptionPanel = new JPanel();
-		contentPane.add(OptionPanel, BorderLayout.NORTH);
+		ContentPane.add(OptionPanel, BorderLayout.NORTH);
 		OptionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JPanel ToolPanel = new JPanel();
@@ -112,6 +127,7 @@ public class t extends JFrame {
 		
 		JToolBar toolBar = new JToolBar();
 		ToolPanel.add(toolBar);
+		
 		
 		JButton btnPen = new JButton("펜");
 		toolBar.add(btnPen);
@@ -131,34 +147,34 @@ public class t extends JFrame {
 		JPanel SizePanel = new JPanel();
 		OptionPanel.add(SizePanel);
 		
-		JToolBar toolBar_2 = new JToolBar();
-		SizePanel.add(toolBar_2);
+		JToolBar ToolBar_2 = new JToolBar();
+		SizePanel.add(ToolBar_2);
 		
-		JMenuBar menuBar_1 = new JMenuBar();
-		toolBar_2.add(menuBar_1);
+		TextField = new JTextField();
+		ToolBar_2.add(TextField);
+		TextField.setColumns(2);
 		
-		JMenu SizeMenu = new JMenu("크기");
-		menuBar_1.add(SizeMenu);
+		//TextField에 숫자 입력 후 변경 버튼을 누르면 굵기 변경
+		JButton BtnSizeChange = new JButton("변경");
+		BtnSizeChange.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				bold = (Integer.parseInt(TextField.getText().trim()));
+			}
+		});
 		
-		JMenuItem MItemSize_1px = new JMenuItem("1px");
-		SizeMenu.add(MItemSize_1px);
-		
-		JMenuItem MItemSize_2px = new JMenuItem("2px");
-		SizeMenu.add(MItemSize_2px);
-		
-		JMenuItem MItemSize_3px = new JMenuItem("3px");
-		SizeMenu.add(MItemSize_3px);
+		BtnSizeChange.setVerticalAlignment(SwingConstants.BOTTOM);
+		ToolBar_2.add(BtnSizeChange);
 		
 		JPanel ColorPanel = new JPanel();
 		OptionPanel.add(ColorPanel);
 		
-		JToolBar toolBar_3 = new JToolBar();
-		ColorPanel.add(toolBar_3);
+		JToolBar ToolBar_3 = new JToolBar();
+		ColorPanel.add(ToolBar_3);
 		
-		JButton btnRED = new JButton("");
-		btnRED.setBackground(Color.RED);
-		toolBar_3.add(btnRED);
-		btnRED.addActionListener(new ActionListener() {
+		JButton BtnRED = new JButton("");
+		BtnRED.setBackground(Color.RED);
+		ToolBar_3.add(BtnRED);
+		BtnRED.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -167,11 +183,11 @@ public class t extends JFrame {
 			}
 		});
 		
-		JButton btnORANGE = new JButton("");
-		btnORANGE.setBackground(Color.ORANGE);
-		toolBar_3.add(btnORANGE);
+		JButton BtnORANGE = new JButton("");
+		BtnORANGE.setBackground(Color.ORANGE);
+		ToolBar_3.add(BtnORANGE);
 		
-		btnORANGE.addActionListener(new ActionListener() {
+		BtnORANGE.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -180,11 +196,11 @@ public class t extends JFrame {
 			}
 		});
 		
-		JButton btnYELLOW = new JButton("");
-		btnYELLOW.setBackground(Color.YELLOW);
-		toolBar_3.add(btnYELLOW);
+		JButton BtnYELLOW = new JButton("");
+		BtnYELLOW.setBackground(Color.YELLOW);
+		ToolBar_3.add(BtnYELLOW);
 		
-		btnYELLOW.addActionListener(new ActionListener() {
+		BtnYELLOW.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -193,11 +209,11 @@ public class t extends JFrame {
 			}
 		});
 		
-		JButton btnGREEN = new JButton("");
-		btnGREEN.setBackground(Color.GREEN);
-		toolBar_3.add(btnGREEN);
+		JButton BtnGREEN = new JButton("");
+		BtnGREEN.setBackground(Color.GREEN);
+		ToolBar_3.add(BtnGREEN);
 		
-		btnGREEN.addActionListener(new ActionListener() {
+		BtnGREEN.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -205,11 +221,11 @@ public class t extends JFrame {
 				color = Color.GREEN;
 			}
 		});
-		JButton btnBLUE = new JButton("");
-		btnBLUE.setBackground(Color.BLUE);
-		toolBar_3.add(btnBLUE);
+		JButton BtnBLUE = new JButton("");
+		BtnBLUE.setBackground(Color.BLUE);
+		ToolBar_3.add(BtnBLUE);
 		
-		btnBLUE.addActionListener(new ActionListener() {
+		BtnBLUE.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -217,11 +233,11 @@ public class t extends JFrame {
 				color = Color.BLUE;
 			}
 		});
-		JButton btnPINK = new JButton("");
-		btnPINK.setBackground(Color.PINK);
-		toolBar_3.add(btnPINK);
+		JButton BtnPINK = new JButton("");
+		BtnPINK.setBackground(Color.PINK);
+		ToolBar_3.add(BtnPINK);
 		
-		btnPINK.addActionListener(new ActionListener() {
+		BtnPINK.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -230,11 +246,11 @@ public class t extends JFrame {
 			}
 		});
 
-		JButton btnBLACK = new JButton("");
-		btnBLACK.setBackground(Color.BLACK);
-		toolBar_3.add(btnBLACK);
+		JButton BtnBLACK = new JButton("");
+		BtnBLACK.setBackground(Color.BLACK);
+		ToolBar_3.add(BtnBLACK);
 		
-		btnBLACK.addActionListener(new ActionListener() {
+		BtnBLACK.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -243,11 +259,11 @@ public class t extends JFrame {
 			}
 		});
 		
-		JButton btnLIGHT_GRAY = new JButton("");
-		btnLIGHT_GRAY.setBackground(Color.LIGHT_GRAY);
-		toolBar_3.add(btnLIGHT_GRAY);
+		JButton BtnLIGHT_GRAY = new JButton("");
+		BtnLIGHT_GRAY.setBackground(Color.LIGHT_GRAY);
+		ToolBar_3.add(BtnLIGHT_GRAY);
 		
-		btnLIGHT_GRAY.addActionListener(new ActionListener() {
+		BtnLIGHT_GRAY.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -256,11 +272,11 @@ public class t extends JFrame {
 			}
 		});
 		
-		JButton btnWHITE = new JButton("");
-		btnWHITE.setBackground(Color.WHITE);
-		toolBar_3.add(btnWHITE);
+		JButton BtnWHITE = new JButton("");
+		BtnWHITE.setBackground(Color.WHITE);
+		ToolBar_3.add(BtnWHITE);
 		
-		btnWHITE.addActionListener(new ActionListener() {
+		BtnWHITE.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -270,7 +286,7 @@ public class t extends JFrame {
 		});
 		
 		DrawPanel DrawPanel = new DrawPanel();
-		contentPane.add(DrawPanel, BorderLayout.CENTER);
+		ContentPane.add(DrawPanel, BorderLayout.CENTER);
 	}
 	
 	class DrawPanel extends JPanel{
@@ -302,6 +318,8 @@ public class t extends JFrame {
 				end = e.getPoint(); 
 				Graphics g = getGraphics();
 				g.setColor(color);
+				Graphics2D g2d = (Graphics2D)g;
+				g2d.setStroke(new BasicStroke(bold));
 				g.drawLine(start.x, start.y, end.x, end.y);
 			}
 			public void mouseClicked(MouseEvent e) {
