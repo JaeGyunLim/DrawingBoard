@@ -10,8 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -19,10 +21,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
+import java.awt.Toolkit;
 
 public class t extends JFrame {
 
 	private JPanel contentPane;
+	Color color;
 
 	/**
 	 * Launch the application.
@@ -44,6 +48,7 @@ public class t extends JFrame {
 	 * Create the frame.
 	 */
 	public t() {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("그림판");
 		setBounds(100, 100, 450, 300);
@@ -51,23 +56,40 @@ public class t extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu MenuOption = new JMenu("\uC635\uC158");
+		JMenu MenuOption = new JMenu("옵션");
 		menuBar.add(MenuOption);
 		
-		JMenuItem MItemGet = new JMenuItem("\uBD88\uB7EC\uC624\uAE30");
+		JMenuItem MItemColor = new JMenuItem("색상");
+		MenuOption.add(MItemColor);		
+		
+		MItemColor.addActionListener(new ActionListener()
+		{
+			JColorChooser chooser = new JColorChooser();
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String cmd = e.getActionCommand();
+				if(cmd.equals("색상"))
+				{
+					color = chooser.showDialog(null, "Color", Color.BLACK);
+				}
+			}
+		});
+		JMenuItem MItemGet = new JMenuItem("불러오기");
 		MenuOption.add(MItemGet);
 		
-		JMenuItem MItemSave = new JMenuItem("\uC800\uC7A5");
+		JMenuItem MItemSave = new JMenuItem("저장");
 		MenuOption.add(MItemSave);
 		MItemSave.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
 			}
 		});
 		
-		JMenuItem MItemExit = new JMenuItem("\uB05D\uB0B4\uAE30");
+		JMenuItem MItemExit = new JMenuItem("나가기");
 		MenuOption.add(MItemExit);
 		MItemExit.addActionListener(new ActionListener() {
 			
@@ -92,10 +114,10 @@ public class t extends JFrame {
 		JToolBar toolBar = new JToolBar();
 		ToolPanel.add(toolBar);
 		
-		JButton btnPen = new JButton("\uD39C");
+		JButton btnPen = new JButton("펜");
 		toolBar.add(btnPen);
 		
-		JButton btnTextBox = new JButton("\uD14D\uC2A4\uD2B8\uC0C1\uC790");
+		JButton btnTextBox = new JButton("텍스트상자");
 		toolBar.add(btnTextBox);
 		
 		JPanel FigurePanel = new JPanel();
@@ -104,7 +126,7 @@ public class t extends JFrame {
 		JToolBar toolBar_1 = new JToolBar();
 		FigurePanel.add(toolBar_1);
 		
-		JButton btnLine = new JButton("\uC120");
+		JButton btnLine = new JButton("선");
 		toolBar_1.add(btnLine);
 		
 		JPanel SizePanel = new JPanel();
@@ -116,7 +138,7 @@ public class t extends JFrame {
 		JMenuBar menuBar_1 = new JMenuBar();
 		toolBar_2.add(menuBar_1);
 		
-		JMenu SizeMenu = new JMenu("\uD06C\uAE30");
+		JMenu SizeMenu = new JMenu("크기");
 		menuBar_1.add(SizeMenu);
 		
 		JMenuItem MItemSize_1px = new JMenuItem("1px");
@@ -137,26 +159,116 @@ public class t extends JFrame {
 		JButton btnRED = new JButton("");
 		btnRED.setBackground(Color.RED);
 		toolBar_3.add(btnRED);
+		btnRED.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.RED;
+			}
+		});
 		
 		JButton btnORANGE = new JButton("");
 		btnORANGE.setBackground(Color.ORANGE);
 		toolBar_3.add(btnORANGE);
 		
+		btnORANGE.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.ORANGE;
+			}
+		});
+		
 		JButton btnYELLOW = new JButton("");
 		btnYELLOW.setBackground(Color.YELLOW);
 		toolBar_3.add(btnYELLOW);
+		
+		btnYELLOW.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.YELLOW;
+			}
+		});
 		
 		JButton btnGREEN = new JButton("");
 		btnGREEN.setBackground(Color.GREEN);
 		toolBar_3.add(btnGREEN);
 		
+		btnGREEN.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.GREEN;
+			}
+		});
 		JButton btnBLUE = new JButton("");
 		btnBLUE.setBackground(Color.BLUE);
 		toolBar_3.add(btnBLUE);
 		
+		btnBLUE.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.BLUE;
+			}
+		});
 		JButton btnPINK = new JButton("");
 		btnPINK.setBackground(Color.PINK);
 		toolBar_3.add(btnPINK);
+		
+		btnPINK.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.PINK;
+			}
+		});
+
+		JButton btnBLACK = new JButton("");
+		btnBLACK.setBackground(Color.BLACK);
+		toolBar_3.add(btnBLACK);
+		
+		btnBLACK.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.BLACK;
+			}
+		});
+		
+		JButton btnLIGHT_GRAY = new JButton("");
+		btnLIGHT_GRAY.setBackground(Color.LIGHT_GRAY);
+		toolBar_3.add(btnLIGHT_GRAY);
+		
+		btnLIGHT_GRAY.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.LIGHT_GRAY;
+			}
+		});
+		
+		JButton btnWHITE = new JButton("");
+		btnWHITE.setBackground(Color.WHITE);
+		toolBar_3.add(btnWHITE);
+		
+		btnWHITE.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				color = Color.WHITE;
+			}
+		});
 		
 		DrawPanel DrawPanel = new DrawPanel();
 		contentPane.add(DrawPanel, BorderLayout.CENTER);
@@ -167,7 +279,22 @@ public class t extends JFrame {
 		Point end;
 		public DrawPanel(){
 			this.addMouseListener(new DrawMouseListener());
+			this.addMouseMotionListener(new MouseMotionListener() {
+				
+				@Override
+				public void mouseMoved(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 		}
+		
 		class DrawMouseListener implements MouseListener{
 			public void mousePressed(MouseEvent e){
 				start = e.getPoint(); 
@@ -175,6 +302,7 @@ public class t extends JFrame {
 			public void mouseReleased(MouseEvent e){
 				end = e.getPoint(); 
 				Graphics g = getGraphics();
+				g.setColor(color);
 				g.drawLine(start.x, start.y, end.x, end.y);
 			}
 			public void mouseClicked(MouseEvent e) {
@@ -184,6 +312,8 @@ public class t extends JFrame {
 			public void mouseExited(MouseEvent e) {
 			}
 		}
-}
+	}
+	
+	
 
 }
