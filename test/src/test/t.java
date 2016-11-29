@@ -10,9 +10,14 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -23,6 +28,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.border.EmptyBorder;
+
+
 import java.awt.Toolkit;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -33,7 +40,9 @@ public class t extends JFrame {
 	Color color;	//색 지정
 	float bold = 3; //굵기
 	private JTextField TextField; //굵기 변경
-
+	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
+	public FreeDrawLineList freeLine; // 현재선
+	
 	/**
 	 * Launch the application.
 	 */
@@ -285,49 +294,101 @@ public class t extends JFrame {
 			}
 		});
 		
-		DrawPanel DrawPanel = new DrawPanel();
-		ContentPane.add(DrawPanel, BorderLayout.CENTER);
+		PaintFreeLine paintFL = new PaintFreeLine();  	      
+		lines.add(freeLine);
+	    //ContentPane.add(paintFL,BorderLayout.CENTER);
+		DrawLine drawLine = new DrawLine();
+		ContentPane.add(drawLine, BorderLayout.CENTER);
 	}
 	
-	class DrawPanel extends JPanel{
-		Point start;
-		Point end;
-		public DrawPanel(){
-			this.addMouseListener(new DrawMouseListener());
-			this.addMouseMotionListener(new MouseMotionListener() {
-				
-				@Override
+	
+	public class PaintFreeLine extends JPanel {// 자유선 그리기 (펜)
+		
+		public PaintFreeLine(){
+			this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+	        	freeLine = new FreeDrawLineList();
+	            lines.add(freeLine);
+	            freeLine.addPoint(e.getX(), e.getY());
+	         }
+	      });
+	     this.addMouseMotionListener(new MouseMotionAdapter() {
+	        public void mouseDragged(MouseEvent e) {
+	           freeLine.addPoint(e.getX(), e.getY());
+	           repaint(); 
+	         }
+	      });
+		}
+	      public void paintComponent(Graphics g) {
+	         super.paintComponent(g);	                 
+	        	 for (FreeDrawLineList line: lines) {	        	 
+	        		if(line != null)
+	        		 line.draw(g);	
+	        	 }	       
+	      }
+	   }
+	
+	class DrawLine extends JPanel{//직선
+		
+		public Vector<Point> vecStartPoint;
+		public Vector<Point> vecEndPoint;
+		Point paintStart = null;//잔상
+		Point paintEnd = null;
+		Point start = null;//그리기
+		Point end = null;
+		public DrawLine(){
+						
+			this.addMouseListener(new MouseAdapter() {
 				public void mouseMoved(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
+					paintEnd = e.getPoint();
 				}
-				
-				@Override
 				public void mouseDragged(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
+					paintEnd = e.getPoint();
+					repaint();				
+				}
+			
+				public void mousePressed(MouseEvent e){
+					paintStart = e.getPoint();
+					start = e.getPoint(); 
+				}
+				public void mouseReleased(MouseEvent e){
+					end = e.getPoint(); 		
+					vecStartPoint.add(start);
+					vecEndPoint.add(end);
+					repaint();
 				}
 			});
-		}
 		
-		class DrawMouseListener implements MouseListener{
-			public void mousePressed(MouseEvent e){
-				start = e.getPoint(); 
+		}
+			
+		public void paintComponent(Graphics g)
+		{
+			super.paintComponent(g);
+			Graphics gr = getGraphics();
+			g.setColor(color);
+			Graphics2D g2d = (Graphics2D)gr;
+			g2d.setStroke(new BasicStroke(bold));
+			if(paintStart != null)
+			{
+				g.drawLine(paintStart.x, paintStart.y, paintEnd.x, paintEnd.y);
 			}
-			public void mouseReleased(MouseEvent e){
-				end = e.getPoint(); 
-				Graphics g = getGraphics();
-				g.setColor(color);
-				Graphics2D g2d = (Graphics2D)g;
-				g2d.setStroke(new BasicStroke(bold));
-				g.drawLine(start.x, start.y, end.x, end.y);
+			try
+			{
+			for(int i = 0; i < vecStartPoint.size() ; i++)
+			{
+				
+					int x1 = vecStartPoint.get(i).x;
+					int y1 = vecStartPoint.get(i).y;
+					int x2 = vecEndPoint.get(i).x;
+					int y2 = vecEndPoint.get(i).y;		
+					g.drawLine(x1, y1, x2, y2);
+				
 			}
-			public void mouseClicked(MouseEvent e) {
 			}
-			public void mouseEntered(MouseEvent e) {
+			catch(Exception e){
+				System.out.println("오류");
 			}
-			public void mouseExited(MouseEvent e) {
-			}
+			
 		}
 	}
 	
