@@ -7,12 +7,14 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -21,22 +23,22 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.border.EmptyBorder;
-import java.awt.Toolkit;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 public class t extends JFrame {
 
 	private JPanel ContentPane;
 	Color color;	//색 지정
 	float bold = 3; //굵기
+	int btnSelect = 0; // 도형 그리기 버튼 선택
 	private JTextField TextField; //굵기 변경
+	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
+	public FreeDrawLineList freeLine; // 현재선
 
-	/**
-	 * Launch the application.
-	 */
+	//메인
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -50,9 +52,6 @@ public class t extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public t() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -128,10 +127,6 @@ public class t extends JFrame {
 		JToolBar toolBar = new JToolBar();
 		ToolPanel.add(toolBar);
 		
-		
-		JButton btnPen = new JButton("펜");
-		toolBar.add(btnPen);
-		
 		JButton btnTextBox = new JButton("텍스트상자");
 		toolBar.add(btnTextBox);
 		
@@ -141,8 +136,42 @@ public class t extends JFrame {
 		JToolBar toolBar_1 = new JToolBar();
 		FigurePanel.add(toolBar_1);
 		
+		JButton btnPen = new JButton("펜");
+		toolBar_1.add(btnPen);
+		
+		btnPen.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				btnSelect = 0;
+				System.out.println("펜");
+			}
+		});
 		JButton btnLine = new JButton("선");
 		toolBar_1.add(btnLine);
+		
+		btnLine.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				btnSelect = 1;
+				System.out.println("선");
+			}
+		});
+		JButton btnOval = new JButton("원");
+		toolBar_1.add(btnOval);
+		
+		btnOval.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				btnSelect = 2;
+				System.out.println("원");
+			}
+		});
 		
 		JPanel SizePanel = new JPanel();
 		OptionPanel.add(SizePanel);
@@ -285,52 +314,74 @@ public class t extends JFrame {
 			}
 		});
 		
-		DrawPanel DrawPanel = new DrawPanel();
-		ContentPane.add(DrawPanel, BorderLayout.CENTER);
-	}
-	
-	class DrawPanel extends JPanel{
-		Point start;
-		Point end;
-		public DrawPanel(){
-			this.addMouseListener(new DrawMouseListener());
-			this.addMouseMotionListener(new MouseMotionListener() {
-				
-				@Override
-				public void mouseMoved(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
+		//====================================== 그리기
+		addMouseMotionListener(new  MouseMotionAdapter(){
+			
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if(btnSelect == 0) // 펜
+				{
+					freeLine.addPoint(e.getX(), e.getY());
+			        repaint();
 				}
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
 				
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-		}
+			}
+		});
 		
-		class DrawMouseListener implements MouseListener{
-			public void mousePressed(MouseEvent e){
-				start = e.getPoint(); 
+		addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				freeLine.addPoint(e.getX(), e.getY());
+		           repaint(); 
 			}
-			public void mouseReleased(MouseEvent e){
-				end = e.getPoint(); 
-				Graphics g = getGraphics();
-				g.setColor(color);
-				Graphics2D g2d = (Graphics2D)g;
-				g2d.setStroke(new BasicStroke(bold));
-				g.drawLine(start.x, start.y, end.x, end.y);
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if(btnSelect == 0) // 펜
+				{
+					freeLine = new FreeDrawLineList();
+	            	lines.add(freeLine);
+	            	freeLine.addPoint(e.getX(), e.getY());
+				}
 			}
-			public void mouseClicked(MouseEvent e) {
-			}
-			public void mouseEntered(MouseEvent e) {
-			}
-			public void mouseExited(MouseEvent e) {
-			}
-		}
+		});
+		
 	}
+	/*
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		Graphics gr = getGraphics();
+		g.setColor(color);
+		Graphics2D g2d = (Graphics2D)gr;
+		g2d.setStroke(new BasicStroke(bold));
+		switch(btnSelect)
+		{
+		case 0:
+			for (FreeDrawLineList line: lines)
+			{	        	 
+				if(line != null)
+					line.draw(g);	
+			}	
+			System.out.println("펜");
+			break;
+			
+		case 1:
+			System.out.println("선");
+			break;
+		case 2:
+			System.out.println("원");
+			break;
+		}
+	}*/
 	
-	
-
 }
