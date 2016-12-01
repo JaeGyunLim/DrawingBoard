@@ -7,14 +7,14 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -32,10 +32,20 @@ public class t extends JFrame {
 
 	private JPanel ContentPane;
 	Color color;	//색 지정
-	float bold = 3; //굵기
-	int btnSelect = 0; // 도형 그리기 버튼 선택
+	float bold = 2; //굵기 < 2로 초기 설정
+	int btnSelect = 0; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
 	private JTextField TextField; //굵기 변경
-	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
+	
+	
+	private Vector<DrawPoint> vecStartPoint;
+	private Vector<DrawPoint> vecEndPoint;	
+	private DrawPoint startPoint;
+	private DrawPoint endPoint;
+	
+	Point start = null;
+	Point end = null;
+	
+	
 	public FreeDrawLineList freeLine; // 현재선
 
 	//메인
@@ -53,6 +63,10 @@ public class t extends JFrame {
 	}
 
 	public t() {
+		
+		vecStartPoint = new Vector<DrawPoint>();
+		vecEndPoint = new Vector<DrawPoint>();
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("그림판");
@@ -148,6 +162,7 @@ public class t extends JFrame {
 				System.out.println("펜");
 			}
 		});
+		
 		JButton btnLine = new JButton("선");
 		toolBar_1.add(btnLine);
 		
@@ -314,74 +329,83 @@ public class t extends JFrame {
 			}
 		});
 		
+			
 		//====================================== 그리기
-		addMouseMotionListener(new  MouseMotionAdapter(){
+		addMouseMotionListener(new MouseMotionAdapter(){
 			
-			@Override
 			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-				if(btnSelect == 0) // 펜
-				{
-					freeLine.addPoint(e.getX(), e.getY());
-			        repaint();
-				}
+				end = e.getPoint();
 			}
-			
-			@Override
 			public void mouseDragged(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+				end = e.getPoint();
+				repaint();
 			}
 		});
 		
 		addMouseListener(new MouseAdapter() {
 			
-			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				freeLine.addPoint(e.getX(), e.getY());
-		           repaint(); 
+				int x = e.getX();
+				int y = e.getY();
+				
+				endPoint = new DrawPoint();
+				endPoint.setX(x);
+				endPoint.setY(y);
+				
+				vecStartPoint.add(startPoint);
+				vecEndPoint.add(endPoint);
+				repaint();
 			}
 			
-			@Override
 			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				if(btnSelect == 0) // 펜
-				{
-					freeLine = new FreeDrawLineList();
-	            	lines.add(freeLine);
-	            	freeLine.addPoint(e.getX(), e.getY());
-				}
+				start = e.getPoint();
+				int x = e.getX();
+				int y = e.getY();
+				
+				startPoint = new DrawPoint();
+				startPoint.setX(x);
+				startPoint.setY(y);
+
 			}
 		});
 		
-	}
-	/*
+	} //t
+	
 	public void paintComponent(Graphics g)
 	{
-		super.paintComponent(g);
+		super.paintComponents(g);
+		
 		Graphics gr = getGraphics();
 		g.setColor(color);
 		Graphics2D g2d = (Graphics2D)gr;
 		g2d.setStroke(new BasicStroke(bold));
-		switch(btnSelect)
+		
+		if(btnSelect == 0) // 펜으로 그리기
 		{
-		case 0:
-			for (FreeDrawLineList line: lines)
-			{	        	 
-				if(line != null)
-					line.draw(g);	
-			}	
-			System.out.println("펜");
-			break;
-			
-		case 1:
-			System.out.println("선");
-			break;
-		case 2:
-			System.out.println("원");
-			break;
+			if(start != null)
+			{
+				g.drawLine(start.x, start.y, end.x, end.y);
+			}
+			for(int i = 0; i < vecStartPoint.size() ; i++)
+			{
+				
+				int x1 = vecStartPoint.get(i).getX();
+				int y1 = vecStartPoint.get(i).getY();
+				int x2 = vecEndPoint.get(i).getX();
+				int y2 = vecEndPoint.get(i).getY();		
+				g.drawLine(x1, y1, x2, y2);
+			}			
 		}
-	}*/
-	
+		
+		else if(btnSelect == 1) // 직선 그리기
+		{
+			
+		}
+		
+		else if(btnSelect == 2) // 원 그리기
+		{
+			
+		}
+		
+	}
 }
