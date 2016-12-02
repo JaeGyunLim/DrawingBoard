@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -28,14 +30,17 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import test.t.PaintFreeLine;
+
 public class t extends JFrame {
 
 	private JPanel ContentPane;
 	Color color;	//색 지정
 	float bold = 2; //굵기 < 2로 초기 설정
-	int btnSelect = 0; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
+	public int btnSelect = 0; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
 	private JTextField TextField; //굵기 변경
-	
+	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
+	public FreeDrawLineList freeLine; // 현재선
 	
 	private Vector<DrawPoint> vecStartPoint;
 	private Vector<DrawPoint> vecEndPoint;	
@@ -45,9 +50,10 @@ public class t extends JFrame {
 	Point start = null;
 	Point end = null;
 	
+	public JButton btnPen;
+	public JButton btnLine;
+	public JButton btnOval;
 	
-	public FreeDrawLineList freeLine; // 현재선
-
 	//메인
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -150,8 +156,14 @@ public class t extends JFrame {
 		JToolBar toolBar_1 = new JToolBar();
 		FigurePanel.add(toolBar_1);
 		
-		JButton btnPen = new JButton("펜");
+		btnPen = new JButton("펜");
 		toolBar_1.add(btnPen);
+		
+		btnLine = new JButton("선");
+		toolBar_1.add(btnLine);
+		
+		btnOval = new JButton("원");
+		toolBar_1.add(btnOval);
 		
 		btnPen.addActionListener(new ActionListener() {
 			
@@ -163,26 +175,24 @@ public class t extends JFrame {
 			}
 		});
 		
-		JButton btnLine = new JButton("선");
-		toolBar_1.add(btnLine);
+		
 		
 		btnLine.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				btnSelect = 1;
 				System.out.println("선");
 			}
 		});
-		JButton btnOval = new JButton("원");
-		toolBar_1.add(btnOval);
+		
 		
 		btnOval.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
 				btnSelect = 2;
 				System.out.println("원");
 			}
@@ -329,83 +339,138 @@ public class t extends JFrame {
 			}
 		});
 		
-			
-		//====================================== 그리기
-		addMouseMotionListener(new MouseMotionAdapter(){
-			
-			public void mouseMoved(MouseEvent e) {
-				end = e.getPoint();
-			}
-			public void mouseDragged(MouseEvent e) {
-				end = e.getPoint();
-				repaint();
-			}
-		});
-		
-		addMouseListener(new MouseAdapter() {
-			
-			public void mouseReleased(MouseEvent e) {
-				int x = e.getX();
-				int y = e.getY();
-				
-				endPoint = new DrawPoint();
-				endPoint.setX(x);
-				endPoint.setY(y);
-				
-				vecStartPoint.add(startPoint);
-				vecEndPoint.add(endPoint);
-				repaint();
-			}
-			
-			public void mousePressed(MouseEvent e) {
-				start = e.getPoint();
-				int x = e.getX();
-				int y = e.getY();
-				
-				startPoint = new DrawPoint();
-				startPoint.setX(x);
-				startPoint.setY(y);
+		/*PaintFreeLine paintFL = new PaintFreeLine();  //자유선(펜)     
+		lines.add(freeLine);
+		ContentPane.add(paintFL,BorderLayout.CENTER);
 
-			}
-		});
+		DrawLine drawLine = new DrawLine();//직선
+		ContentPane.add(drawLine, BorderLayout.CENTER);*/
+		DrawSquare drawSquare = new DrawSquare();
+		ContentPane.add(drawSquare, BorderLayout.CENTER);
+		
 		
 	} //t
+
+
+	public class PaintFreeLine extends JPanel {// 자유선 그리기 (펜)
+		
+		public PaintFreeLine(){
+			this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+	        	freeLine = new FreeDrawLineList();
+	            lines.add(freeLine);
+	            freeLine.addPoint(e.getX(), e.getY());
+	         }
+	      });
+	     this.addMouseMotionListener(new MouseMotionAdapter() {
+	        public void mouseDragged(MouseEvent e) {
+	           freeLine.addPoint(e.getX(), e.getY());
+	           repaint(); 
+	         }
+	      });
+		}
+	      public void paintComponent(Graphics g) {
+	         super.paintComponent(g);	                 
+	        	 for (FreeDrawLineList line: lines) {	        	 
+	        		if(line != null)
+	        		 line.draw(g);	
+	        	 }	       
+	      }
+	   }
 	
-	public void paintComponent(Graphics g)
-	{
-		super.paintComponents(g);
+	class DrawLine extends JPanel{//직선
 		
-		Graphics gr = getGraphics();
-		g.setColor(color);
-		Graphics2D g2d = (Graphics2D)gr;
-		g2d.setStroke(new BasicStroke(bold));
+		public Vector<Point> vecStartPoint;
+		public Vector<Point> vecEndPoint;
+		Point paintStart = null;//잔상
+		Point paintEnd = null;
+		Point start = null;//그리기
+		Point end = null;
+		public DrawLine(){
+						
+			this.addMouseListener(new MouseAdapter() {
+				public void mouseMoved(MouseEvent e) {
+					paintEnd = e.getPoint();
+				}
+				public void mouseDragged(MouseEvent e) {
+					paintEnd = e.getPoint();
+					repaint();				
+				}
+			
+				public void mousePressed(MouseEvent e){
+					paintStart = e.getPoint();
+					start = e.getPoint(); 
+				}
+				public void mouseReleased(MouseEvent e){
+					end = e.getPoint(); 		
+					vecStartPoint.add(start);
+					vecEndPoint.add(end);
+					repaint();
+				}
+			});
 		
-		if(btnSelect == 0) // 펜으로 그리기
+		}
+			
+		public void paintComponent(Graphics g)
 		{
-			if(start != null)
+			super.paintComponent(g);
+			Graphics gr = getGraphics();
+			g.setColor(color);
+			Graphics2D g2d = (Graphics2D)gr;
+			g2d.setStroke(new BasicStroke(bold));
+			if(paintStart != null)
 			{
-				g.drawLine(start.x, start.y, end.x, end.y);
+				g.drawLine(paintStart.x, paintStart.y, paintEnd.x, paintEnd.y);
 			}
+			try
+			{
 			for(int i = 0; i < vecStartPoint.size() ; i++)
 			{
 				
-				int x1 = vecStartPoint.get(i).getX();
-				int y1 = vecStartPoint.get(i).getY();
-				int x2 = vecEndPoint.get(i).getX();
-				int y2 = vecEndPoint.get(i).getY();		
-				g.drawLine(x1, y1, x2, y2);
-			}			
-		}
-		
-		else if(btnSelect == 1) // 직선 그리기
-		{
+					int x1 = vecStartPoint.get(i).x;
+					int y1 = vecStartPoint.get(i).y;
+					int x2 = vecEndPoint.get(i).x;
+					int y2 = vecEndPoint.get(i).y;		
+					g.drawLine(x1, y1, x2, y2);
+				
+			}
+			}
+			catch(Exception e){
+				System.out.println("오류");
+			}
 			
 		}
 		
-		else if(btnSelect == 2) // 원 그리기
-		{
-			
+	}
+	class DrawSquare extends JPanel{
+		public Point start;
+		public Point end;
+		public DrawSquare(){
+			this.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					start = e.getPoint();
+					
+				}
+				public void mouseReleased(MouseEvent e){
+					end = e.getPoint();
+					repaint();
+				}	
+			});		
 		}
 		
+		public void paintComponent(Graphics g)
+		{
+			int sx,sy,ex,ey;
+			super.paintComponent(g);
+			
+			
+			if(start != null && end != null){
+				sx = (int) start.getX();
+				sy = (int) start.getY();
+				ex = (int) end.getX();
+				ey = (int) end.getY();
+				g.drawRect(sx, sy, ex - sx,ey - sy);
+			}
+		}
 	}
 }
