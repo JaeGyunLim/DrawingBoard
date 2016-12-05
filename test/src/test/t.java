@@ -30,24 +30,22 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import test.t.PaintFreeLine;
-
 public class t extends JFrame {
 
 	private JPanel ContentPane;
 	Color color;	//색 지정
-	float bold = 2; //굵기 < 2로 초기 설정
-	public int btnSelect = 0; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
+	int bold = 1; //굵기 < 1로 초기 설정
+	public int btnSelect = 1; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
 	private JTextField TextField; //굵기 변경
 	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
 	public FreeDrawLineList freeLine; // 현재선
-
+	
+	//private Vector<DrawPoint> vecStartPoint;
+	//private Vector<DrawPoint> vecEndPoint;
+	private DrawPoint startPoint;
+	private DrawPoint endPoint;	
 	Point start = null;
 	Point end = null;
-	
-	public JButton btnPen;
-	public JButton btnLine;
-	public JButton btnOval;
 	
 	//메인
 	public static void main(String[] args) {
@@ -65,13 +63,10 @@ public class t extends JFrame {
 
 	public t() {
 		
-		//vecStartPoint = new Vector<DrawPoint>();
-		//vecEndPoint = new Vector<DrawPoint>();
-		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("그림판");
-		setBounds(100, 100, 500, 300);
+		setBounds(100, 100, 550, 300);
 		
 		JMenuBar MenuBar = new JMenuBar();
 		setJMenuBar(MenuBar);
@@ -151,21 +146,24 @@ public class t extends JFrame {
 		JToolBar toolBar_1 = new JToolBar();
 		FigurePanel.add(toolBar_1);
 		
-		btnPen = new JButton("펜");
+		JButton btnPen = new JButton("펜");
 		toolBar_1.add(btnPen);
 		
-		btnLine = new JButton("선");
+		JButton btnLine = new JButton("선");
 		toolBar_1.add(btnLine);
 		
-		btnOval = new JButton("원");
+		JButton btnOval = new JButton("원");
 		toolBar_1.add(btnOval);
+		
+		JButton btnSquare = new JButton("네모");
+		toolBar_1.add(btnSquare);
 		
 		btnPen.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				btnSelect = 0;
+				btnSelect = 1;
 				System.out.println("펜");
 			}
 		});
@@ -177,7 +175,8 @@ public class t extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println("선");
+				btnSelect = 2;
+				System.out.println("선" + btnSelect);
 			}
 		});
 		
@@ -188,11 +187,19 @@ public class t extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				
-				btnSelect = 2;
-				System.out.println("원");
+				btnSelect = 3;
+				System.out.println("원" );
 			}
 		});
-		
+		btnSquare.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				btnSelect = 4;
+				System.out.println("네모");
+			}
+		});
 		JPanel SizePanel = new JPanel();
 		OptionPanel.add(SizePanel);
 		
@@ -202,7 +209,7 @@ public class t extends JFrame {
 		TextField = new JTextField();
 		ToolBar_2.add(TextField);
 		TextField.setColumns(2);
-		
+		TextField.setText(bold + "");
 		//TextField에 숫자 입력 후 변경 버튼을 누르면 굵기 변경
 		JButton BtnSizeChange = new JButton("변경");
 		BtnSizeChange.addActionListener(new ActionListener() {
@@ -334,17 +341,21 @@ public class t extends JFrame {
 			}
 		});
 		
-		//PaintFreeLine paintFL = new PaintFreeLine();  //자유선(펜)     
-		//lines.add(freeLine);
-		//ContentPane.add(paintFL,BorderLayout.CENTER);
 		
-		//DrawLine drawLine = new DrawLine();//직선
-		//ContentPane.add(drawLine, BorderLayout.CENTER);
-		//DrawSquare drawSquare = new DrawSquare();
-		//ContentPane.add(drawSquare, BorderLayout.CENTER);
-		DrawCircle drawCircle = new DrawCircle();
-		ContentPane.add(drawCircle,BorderLayout.CENTER);
-		
+			//PaintFreeLine paintFL = new PaintFreeLine();       
+			//lines.add(freeLine);
+			//ContentPane.add(paintFL,BorderLayout.CENTER);
+
+
+			DrawLine drawLine = new DrawLine();
+			ContentPane.add(drawLine, BorderLayout.CENTER);
+			
+			//DrawCircle drawCircle = new DrawCircle();
+			//ContentPane.add(drawCircle,BorderLayout.CENTER);
+			//DrawSquare drawSquare = new DrawSquare();
+			//ContentPane.add(drawSquare, BorderLayout.CENTER);
+
+
 	} //t
 
 
@@ -374,71 +385,72 @@ public class t extends JFrame {
 	      }
 	   }
 	
-	class DrawLine extends JPanel{//직선
-		
-		public Vector<Point> vecStartPoint;
-		public Vector<Point> vecEndPoint;
-		Point paintStart = null;//잔상
-		Point paintEnd = null;
-		Point start = null;//그리기
+	class DrawLine extends JPanel //직선
+	{
+		private Vector<DrawPoint> vecStartPoint;
+		private Vector<DrawPoint> vecEndPoint;
+		Point start = null;
 		Point end = null;
-		public DrawLine(){
-						
-			this.addMouseListener(new MouseAdapter() {
-				public void mouseMoved(MouseEvent e) {
-					paintEnd = e.getPoint();
-				}
-				public void mouseDragged(MouseEvent e) {
-					paintEnd = e.getPoint();
-					repaint();				
-				}
+		
+		public DrawLine()
+		{		
+			vecStartPoint = new Vector<DrawPoint>();
+			vecEndPoint = new Vector<DrawPoint>();
 			
-				public void mousePressed(MouseEvent e){
-					paintStart = e.getPoint();
-					start = e.getPoint(); 
+			this.addMouseListener(new MouseAdapter()
+			{
+				public void mouseMoved(MouseEvent e)
+				{
+					end = e.getPoint();
 				}
-				public void mouseReleased(MouseEvent e){
-					end = e.getPoint(); 	
-					vecStartPoint.add(start);
-					vecEndPoint.add(end);
-					repaint();
+				public void mouseDragged(MouseEvent e)
+				{
+					end = e.getPoint();
+					repaint();					
+				}
+				public void mousePressed(MouseEvent e)
+				{				
+					start = e.getPoint();
+					int x = e.getX();
+					int y = e.getY();
 					
+					startPoint = new DrawPoint();
+					startPoint.setX(x);
+					startPoint.setY(y);	
+				}
+				public void mouseReleased(MouseEvent e)
+				{
+					int x = e.getX();
+					int y = e.getY();
 					
+					endPoint = new DrawPoint();
+					endPoint.setX(x);
+					endPoint.setY(y);
+					
+					vecStartPoint.add(startPoint);
+					vecEndPoint.add(endPoint);
+					repaint();					
 				}
 			});
-		
 		}
-			
 		public void paintComponent(Graphics g)
 		{
+			
 			super.paintComponent(g);
 			Graphics gr = getGraphics();
 			g.setColor(color);
 			Graphics2D g2d = (Graphics2D)gr;
 			g2d.setStroke(new BasicStroke(bold));
-			if(paintStart != null)
-			{
-				g.drawLine(paintStart.x, paintStart.y, paintEnd.x, paintEnd.y);
-			}
-			try
-			{
 			for(int i = 0; i < vecStartPoint.size() ; i++)
 			{
 				
-					int x1 = vecStartPoint.get(i).x;
-					int y1 = vecStartPoint.get(i).y;
-					int x2 = vecEndPoint.get(i).x;
-					int y2 = vecEndPoint.get(i).y;		
-					g.drawLine(x1, y1, x2, y2);
-				
+				int x1 = vecStartPoint.get(i).getX();
+				int y1 = vecStartPoint.get(i).getY();
+				int x2 = vecEndPoint.get(i).getX();
+				int y2 = vecEndPoint.get(i).getY();		
+				g.drawLine(x1, y1, x2, y2);
 			}
-			}
-			catch(Exception e){
-				System.out.println("오류");
-			}
-			
 		}
-		
 	}
 	class DrawSquare extends JPanel{ //사각형
 		public Point start;
