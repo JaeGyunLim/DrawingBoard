@@ -41,12 +41,7 @@ public class t extends JFrame {
 	private JTextField TextField; //굵기 변경
 	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
 	public FreeDrawLineList freeLine; // 현재선
-	
-	private Vector<DrawPoint> vecStartPoint;
-	private Vector<DrawPoint> vecEndPoint;	
-	private DrawPoint startPoint;
-	private DrawPoint endPoint;
-	
+
 	Point start = null;
 	Point end = null;
 	
@@ -70,8 +65,8 @@ public class t extends JFrame {
 
 	public t() {
 		
-		vecStartPoint = new Vector<DrawPoint>();
-		vecEndPoint = new Vector<DrawPoint>();
+		//vecStartPoint = new Vector<DrawPoint>();
+		//vecEndPoint = new Vector<DrawPoint>();
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -339,15 +334,16 @@ public class t extends JFrame {
 			}
 		});
 		
-		/*PaintFreeLine paintFL = new PaintFreeLine();  //자유선(펜)     
-		lines.add(freeLine);
-		ContentPane.add(paintFL,BorderLayout.CENTER);
-
-		DrawLine drawLine = new DrawLine();//직선
-		ContentPane.add(drawLine, BorderLayout.CENTER);*/
-		DrawSquare drawSquare = new DrawSquare();
-		ContentPane.add(drawSquare, BorderLayout.CENTER);
+		//PaintFreeLine paintFL = new PaintFreeLine();  //자유선(펜)     
+		//lines.add(freeLine);
+		//ContentPane.add(paintFL,BorderLayout.CENTER);
 		
+		//DrawLine drawLine = new DrawLine();//직선
+		//ContentPane.add(drawLine, BorderLayout.CENTER);
+		//DrawSquare drawSquare = new DrawSquare();
+		//ContentPane.add(drawSquare, BorderLayout.CENTER);
+		DrawCircle drawCircle = new DrawCircle();
+		ContentPane.add(drawCircle,BorderLayout.CENTER);
 		
 	} //t
 
@@ -402,10 +398,12 @@ public class t extends JFrame {
 					start = e.getPoint(); 
 				}
 				public void mouseReleased(MouseEvent e){
-					end = e.getPoint(); 		
+					end = e.getPoint(); 	
 					vecStartPoint.add(start);
 					vecEndPoint.add(end);
 					repaint();
+					
+					
 				}
 			});
 		
@@ -442,7 +440,7 @@ public class t extends JFrame {
 		}
 		
 	}
-	class DrawSquare extends JPanel{
+	class DrawSquare extends JPanel{ //사각형
 		public Point start;
 		public Point end;
 		public DrawSquare(){
@@ -472,5 +470,37 @@ public class t extends JFrame {
 				g.drawRect(sx, sy, ex - sx,ey - sy);
 			}
 		}
+	}
+	
+	class DrawCircle extends JPanel{
+		public Point start;
+		public Point end;
+		public DrawCircle(){
+			this.addMouseListener(new MouseAdapter() {
+				public void mousePressed(MouseEvent e) {
+					start = e.getPoint();
+					
+				}
+				public void mouseReleased(MouseEvent e){
+					end = e.getPoint();
+					repaint();
+				}	
+			});		
+		}
+		
+		public void paintComponent(Graphics g)
+		{
+			int sx,sy,ex,ey,tx,ty;
+			super.paintComponent(g);
+			if(start != null && end != null){
+				sx = (int) start.getX();
+				sy = (int) start.getY();
+				ex = (int) end.getX();
+				ey = (int) end.getY();
+				tx = ex - sx;
+				ty = ey = ey;
+				g.drawOval(sx, sy, ex - sx,ey - sy);
+			}
+		}			
 	}
 }
