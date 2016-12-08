@@ -37,15 +37,15 @@ public class t extends JFrame {
 	private JPanel ContentPane;
 	Color color;	//색 지정
 	int bold = 1; //굵기 < 1로 초기 설정
-	public int btnSelect = 1; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
+	private int btnSelect = 1; // 도형 그리기 버튼 선택 < 펜으로 초기 설정
 	private JTextField TextField; //굵기 변경
 	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
 	public FreeDrawLineList freeLine; // 현재선
 	
 	//private Vector<DrawPoint> vecStartPoint;
 	//private Vector<DrawPoint> vecEndPoint;
-	private DrawPoint startPoint;
-	private DrawPoint endPoint;	
+	//private DrawPoint startPoint;
+	//private DrawPoint endPoint;	
 	Point start = null;
 	Point end = null;
 	
@@ -64,6 +64,7 @@ public class t extends JFrame {
 	}
 
 	public t() {
+		setBackground(Color.WHITE);
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/Palette-icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,11 +126,13 @@ public class t extends JFrame {
 		
 		
 		ContentPane = new JPanel();
+		ContentPane.setBackground(Color.WHITE);
 		ContentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(ContentPane);
 		ContentPane.setLayout(new BorderLayout(0, 0));
 		
 		JPanel OptionPanel = new JPanel();
+		OptionPanel.setBackground(Color.WHITE);
 		ContentPane.add(OptionPanel, BorderLayout.NORTH);
 		OptionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
@@ -195,6 +198,7 @@ public class t extends JFrame {
 				
 				btnSelect = 3;
 				System.out.println("원" );
+				
 			}
 		});
 		btnSquare.addActionListener(new ActionListener() {
@@ -347,26 +351,69 @@ public class t extends JFrame {
 			}
 		});
 		
+		
 		//펜
 		//PaintFreeLine paintFL = new PaintFreeLine();       
 		//lines.add(freeLine);
 		//ContentPane.add(paintFL,BorderLayout.CENTER);
 		
 		//직선
-		DrawLine drawLine = new DrawLine();
-		ContentPane.add(drawLine, BorderLayout.CENTER);
+		//DrawLine drawLine = new DrawLine();
+		//ContentPane.add(drawLine, BorderLayout.CENTER);
 			
 		//원
 		//DrawCircle drawCircle = new DrawCircle();
 		//ContentPane.add(drawCircle,BorderLayout.CENTER);
 		
 		//사각형
-		//DrawSquare drawSquare = new DrawSquare();
-		//ContentPane.add(drawSquare, BorderLayout.CENTER);
-		
+
+		DrawSquare drawSquare = new DrawSquare();
+		ContentPane.add(drawSquare, BorderLayout.CENTER);
 	} //t
 
-
+	public class Paint extends JPanel
+	{
+		Point start;
+		Point end;
+		public Paint()
+		{
+			this.addMouseListener(new DrawMouseListener());
+			this.addMouseMotionListener(new MouseMotionListener() {
+				
+				@Override
+				public void mouseMoved(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseDragged(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
+		
+		class DrawMouseListener implements MouseListener{
+			public void mousePressed(MouseEvent e){
+				start = e.getPoint(); 
+			}
+			public void mouseReleased(MouseEvent e){
+				end = e.getPoint(); 
+				Graphics g = getGraphics();
+				g.setColor(color);
+				Graphics2D g2d = (Graphics2D)g;
+				g2d.setStroke(new BasicStroke(bold));
+				g.drawLine(start.x, start.y, end.x, end.y);
+			}
+			public void mouseClicked(MouseEvent e) {
+			}
+			public void mouseEntered(MouseEvent e) {
+			}
+			public void mouseExited(MouseEvent e) {
+			}
+		}
+	}
 	public class PaintFreeLine extends JPanel
 	{
 		public PaintFreeLine()
@@ -408,13 +455,11 @@ public class t extends JFrame {
 				@Override
 				public void mouseMoved(MouseEvent e) {
 					// TODO Auto-generated method stub
-					
 				}
 				
 				@Override
 				public void mouseDragged(MouseEvent e) {
 					// TODO Auto-generated method stub
-					
 				}
 			});
 		}
@@ -429,7 +474,11 @@ public class t extends JFrame {
 				g.setColor(color);
 				Graphics2D g2d = (Graphics2D)g;
 				g2d.setStroke(new BasicStroke(bold));
-				g.drawLine(start.x, start.y, end.x, end.y);
+				if(btnSelect == 2)
+				{
+					g.drawLine(start.x, start.y, end.x, end.y);
+				}
+				
 			}
 			public void mouseClicked(MouseEvent e) {
 			}
@@ -444,6 +493,7 @@ public class t extends JFrame {
 		public Point start;
 		public Point end;
 		public DrawSquare(){
+			this.setBackground(Color.WHITE);
 			this.addMouseListener(new MouseAdapter() {
 				public void mousePressed(MouseEvent e) {
 					start = e.getPoint();
