@@ -1,5 +1,4 @@
 package test;
-import java.sql.DriverAction;
 
 public class Test {
 
