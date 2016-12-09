@@ -4,6 +4,8 @@ public class DrawPoint {
 	private int x;
 	private int y;
 	private int bold;
+	private int btnselet;
+	
 	public int getX() {
 		return x;
 	}
@@ -21,5 +23,11 @@ public class DrawPoint {
 	}
 	public void setBold(int bold) {
 		this.bold = bold;
+	}
+	public int getBtnselet() {
+		return btnselet;
+	}
+	public void setBtnselet(int btnselet) {
+		this.btnselet = btnselet;
 	}
 }

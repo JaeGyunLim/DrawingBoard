@@ -1,5 +1,7 @@
 package test;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -10,7 +12,12 @@ import java.awt.event.MouseMotionListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
 public class MyPanel extends JPanel  implements ActionListener,MouseListener,MouseMotionListener { 
 
@@ -18,9 +25,14 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	public JButton linebtn;
 	public JButton nemobtn;
 	public JButton onebtn;
-		
+	public JButton colorbtn;
+	public JButton eraserbtn;
+	
+	public JToolBar drawBar;
+	public JToolBar opBar;
+	
+	public Color color;
 	public int selector = 0;//선택 값
-
 
 	public Vector<Point> freelines = new Vector<Point>();//자유 도형 그리기 x,y좌표 저장
 	
@@ -36,24 +48,34 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	
 	
 	public MyPanel(){
+		drawBar = new JToolBar();
+		opBar = new JToolBar();
+		
 		freebtn = new JButton("자유선");
 		linebtn = new JButton("직선");
 		nemobtn = new JButton("네모");
 		onebtn = new JButton("원");
+		colorbtn = new JButton("색상");
+		eraserbtn = new JButton("지우기");
+		
+		
+		drawBar.add(freebtn);
+		drawBar.add(linebtn);
+		drawBar.add(nemobtn);
+		drawBar.add(onebtn);
+		opBar.add(colorbtn);
+		opBar.add(eraserbtn);
 		
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-
 		freebtn.addActionListener(this);
 		linebtn.addActionListener(this);
 		nemobtn.addActionListener(this);
 		onebtn.addActionListener(this);
-		
-			
-		this.add(freebtn);
-		this.add(linebtn);
-		this.add(nemobtn);
-		this.add(onebtn);
+		colorbtn.addActionListener(this);
+		eraserbtn.addActionListener(this);
+		this.add(drawBar);
+		this.add(opBar);
 	}
 
 	@Override
@@ -119,7 +141,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		JButton selectbtn = (JButton)e.getSource();
-		
+			
 		if(selectbtn == freebtn){
 			selector = 0;
 		}
@@ -135,11 +157,21 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 			selector = 3;
 			
 		}
+		
+		else if(selectbtn == colorbtn){
+			color = JColorChooser.showDialog(null, "Color", Color.BLACK);
+		}
+		
+		else if(selectbtn == eraserbtn){
+			selector = 4;
+		}
 	}
 	
 	public void paintComponent(Graphics g){
 		int sx,sy,ex,ey,tx,ty;
 		super.paintComponent(g);
+		
+		g.setColor(color);
 		
 		if(selector == 0){//자유
 			
@@ -266,6 +298,10 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 			}			
 		
 		}//원
+		else if(selector == 4)
+		{
+			g.clearRect(0, 0, 500, 300);
+		}
 	}
 }
 	

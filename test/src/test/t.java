@@ -42,10 +42,6 @@ public class t extends JFrame {
 	public List<FreeDrawLineList> lines = new ArrayList<FreeDrawLineList>();//자유 도형 그리기 x,y좌표 저장
 	public FreeDrawLineList freeLine; // 현재선
 	
-	//private Vector<DrawPoint> vecStartPoint;
-	//private Vector<DrawPoint> vecEndPoint;
-	//private DrawPoint startPoint;
-	//private DrawPoint endPoint;	
 	Point start = null;
 	Point end = null;
 	
@@ -64,8 +60,8 @@ public class t extends JFrame {
 	}
 
 	public t() {
-		setBackground(Color.WHITE);
-		
+		DrawPoint drawPoint = new DrawPoint();
+		setBackground(Color.WHITE);	
 		setIconImage(Toolkit.getDefaultToolkit().getImage(t.class.getResource("/test/Palette-icon.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("그림판");
@@ -172,7 +168,7 @@ public class t extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				btnSelect = 1;
+				drawPoint.setBtnselet(1);
 				System.out.println("펜");
 			}
 		});
@@ -184,8 +180,7 @@ public class t extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				btnSelect = 2;
-				System.out.println("선" + btnSelect);
+				drawPoint.setBtnselet(2);
 			}
 		});
 		
@@ -195,8 +190,7 @@ public class t extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
-				btnSelect = 3;
+				drawPoint.setBtnselet(3);
 				System.out.println("원" );
 				
 			}
@@ -206,7 +200,7 @@ public class t extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				btnSelect = 4;
+				drawPoint.setBtnselet(4);
 				System.out.println("네모");
 			}
 		});
@@ -350,25 +344,29 @@ public class t extends JFrame {
 				color = Color.WHITE;
 			}
 		});
-		
-		
 		//펜
 		//PaintFreeLine paintFL = new PaintFreeLine();       
 		//lines.add(freeLine);
 		//ContentPane.add(paintFL,BorderLayout.CENTER);
 		
+
 		//직선
 		//DrawLine drawLine = new DrawLine();
 		//ContentPane.add(drawLine, BorderLayout.CENTER);
-			
+		
+
 		//원
-		//DrawCircle drawCircle = new DrawCircle();
-		//ContentPane.add(drawCircle,BorderLayout.CENTER);
+		DrawCircle drawCircle = new DrawCircle();
+		ContentPane.add(drawCircle,BorderLayout.CENTER);
 		
 		//사각형
-
 		DrawSquare drawSquare = new DrawSquare();
-		ContentPane.add(drawSquare, BorderLayout.CENTER);
+		//ContentPane.add(drawSquare, BorderLayout.CENTER);
+		
+
+		
+
+		
 	} //t
 
 	public class Paint extends JPanel
