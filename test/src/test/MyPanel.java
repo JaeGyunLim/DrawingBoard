@@ -43,18 +43,17 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	public String imagePath;
 	BufferedImage image;
 	
-	public Vector<Point> freelines = new Vector<Point>();//자유 도형 그리기 x,y좌표 저장
+	public Vector<FreeLine> fLine = new Vector<FreeLine>();
+	public FreeLine freeLine;//자유선(펜)
 	
-	public Vector<Point> lineStart = new Vector<Point>();//직선
-	public Vector<Point> lineEnd = new Vector<Point>();//직선
-	public Vector<Point> squareStart = new Vector<Point>();//직선
-	public Vector<Point> squareEnd = new Vector<Point>();//직선
-	public Vector<Point> circleStart = new Vector<Point>();//직선
-	public Vector<Point> circleEnd = new Vector<Point>();//직선
+	public Vector<RightLine> rLine = new Vector<RightLine>();
+	public RightLine rightLine;//직선
 	
-	public Vector<Point> start = new Vector<Point>();
-	public Vector<Point> end = new Vector<Point>();
+	public Vector<Square> squares = new Vector<Square>();
+	public Square square;//사각형
 	
+	public Vector<Circle> circles = new Vector<Circle>();
+	public Circle circle;//원
 	
 	public MyPanel(){
 		drawBar = new JToolBar();
@@ -68,7 +67,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		colorbtn = new JButton("");
 		eraserbtn = new JButton("");
 		boldbtn = new JButton("변경");
-		eraSelBtn = new JButton("부분 지우기");
+		eraSelBtn = new JButton("전체 지우기");
 		
 		boldText = new JTextField();
 		boldText.setText(bold + "");
@@ -109,8 +108,10 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		freelines.add(e.getPoint());
-		repaint();
+		if(selector == 0){
+			freeLine.addPoint(e.getX(),e.getY(),color,bold);
+			repaint();
+		}
 		
 	}
 
@@ -137,31 +138,41 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		start.add(e.getPoint());
-		
-		if(selector == 0)
-		freelines.add(e.getPoint());//자유선
-		else if(selector == 1)
-		lineStart.add(e.getPoint()); //직선
-		else if(selector == 2)
-		squareStart.add(e.getPoint());//네모
-		else if(selector == 3)
-		circleStart.add(e.getPoint());//동그라미
+		if(selector == 0){//자유선
+			freeLine = new FreeLine();
+			fLine.add(freeLine);
+			freeLine.addPoint(e.getX(),e.getY(),color,bold);
+		}
+		else if(selector == 1){//직선
+			rightLine = new RightLine();
+			rLine.add(rightLine);
+			rightLine.addPoint(e.getX(), e.getY(),color,bold);
+		}
+		else if(selector == 2){//사각형
+			square = new Square();
+			squares.add(square);
+			square.addPoint(e.getX(), e.getY(),color,bold);
+		}
+		else if(selector == 3){//원
+			circle = new Circle();
+			circles.add(circle);
+			circle.addPoint(e.getX(), e.getY(),color,bold);
+		}
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		end.add(e.getPoint());
-		
-		if(selector == 1)
-		lineEnd.add(e.getPoint());
-		else if(selector == 2)
-		squareEnd.add(e.getPoint());
-		else if(selector == 3)
-		circleEnd.add(e.getPoint());
-		
+		if(selector == 1){
+			rightLine.addPoint(e.getX(), e.getY(),color,bold);
+		}
+		else if(selector == 2){
+			square.addPoint(e.getX(), e.getY(),color,bold);
+		}
+		else if(selector == 3){
+			circle.addPoint(e.getX(), e.getY(),color,bold);
+		}
 		repaint();
 	}
 
@@ -182,23 +193,18 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 			
 		}
 		else if(selectbtn == onebtn){
-			selector = 3;
-			
-		}
-		
+			selector = 3;		
+		}		
 		else if(selectbtn == colorbtn){
 			color = JColorChooser.showDialog(null, "Color", Color.BLACK);
-		}
-		
+		}		
 		else if(selectbtn == eraserbtn){
 			selector = 4;
 		}
-
 		else if(selectbtn == boldbtn)
 		{
 			bold = (Integer.parseInt(boldText.getText().trim()));
-		}
-		
+		}		
 		else if(selectbtn == eraSelBtn)
 		{
 			selector = 5;
@@ -206,149 +212,26 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	}
 	
 	public void paintComponent(Graphics g){
-		int sx,sy,ex,ey,tx,ty;
 		super.paintComponent(g);
 		
-		g.setColor(color);
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setStroke(new BasicStroke(bold));
 		
-		if(selector == 0){//자유
-			
-		}
-		else if(selector == 1){//직선		
-			for(int i = 0; i < lineEnd.size();i++)
-			{		
-				Point start1 = lineStart.elementAt(i);
-				Point end2 = lineEnd.elementAt(i);
-				g.drawLine((int)start1.getX(), (int)start1.getY(), (int)end2.getX(), (int)end2.getY());
-			}
-			for(int i = 0; i < squareEnd.size();i++){
-				
-				if(i < squareStart.size()){
-			
-					Point start = squareStart.elementAt(i);
-					Point end = squareEnd.elementAt(i);
-					sx = (int) start.getX();
-					sy = (int) start.getY();
-					ex = (int) end.getX();
-					ey = (int) end.getY();
-					tx = ex - sx;
-					ty = ey - ey;
-					g.drawRect(sx, sy, ex - sx,ey - sy);
-
-				}
-			}
-			for(int i = 0; i < circleEnd.size();i++)
-			{
-				if(i < circleStart.size()){
-					Point start = circleStart.elementAt(i);
-					Point end = circleEnd.elementAt(i);
-					sx = (int) start.getX();
-					sy = (int) start.getY();
-					ex = (int) end.getX();
-					ey = (int) end.getY();
-					tx = ex - sx;
-					ty = ey - ey;
-					g.drawOval(sx, sy, ex - sx,ey - sy);
-				}
-			}
-		}
-		else if(selector == 2){//네모
-			if(squareStart != null && squareEnd != null){
-			
-				for(int i = 0; i < lineEnd.size();i++)
-				{		
-					Point start1 = lineStart.elementAt(i);
-					Point end2 = lineEnd.elementAt(i);
-					g.drawLine((int)start1.getX(), (int)start1.getY(), (int)end2.getX(), (int)end2.getY());
-				}
-				for(int i = 0; i < squareEnd.size();i++){
-				
-					if(i < squareStart.size()){
-				
-						Point start = squareStart.elementAt(i);
-						Point end = squareEnd.elementAt(i);
-						sx = (int) start.getX();
-						sy = (int) start.getY();
-						ex = (int) end.getX();
-						ey = (int) end.getY();
-						tx = ex - sx;
-						ty = ey - ey;
-						g.drawRect(sx, sy, ex - sx,ey - sy);
-
-					}
-				}
-				for(int i = 0; i < circleEnd.size();i++)
-				{
-					if(i < circleStart.size()){
-						Point start = circleStart.elementAt(i);
-						Point end = circleEnd.elementAt(i);
-						sx = (int) start.getX();
-						sy = (int) start.getY();
-						ex = (int) end.getX();
-						ey = (int) end.getY();
-						tx = ex - sx;
-						ty = ey - ey;
-						g.drawOval(sx, sy, ex - sx,ey - sy);
-					}
-				}
-			}
-		}
-		else if(selector == 3){//원
-			if(circleStart != null && circleEnd != null)
-			{
-				for(int i = 0; i < lineEnd.size();i++)
-				{		
-					Point start1 = lineStart.elementAt(i);
-					Point end2 = lineEnd.elementAt(i);
-					g.drawLine((int)start1.getX(), (int)start1.getY(), (int)end2.getX(), (int)end2.getY());
-				}
-				for(int i = 0; i < squareEnd.size();i++){
-					
-					if(i < squareStart.size()){
-				
-						Point start = squareStart.elementAt(i);
-						Point end = squareEnd.elementAt(i);
-						sx = (int) start.getX();
-						sy = (int) start.getY();
-						ex = (int) end.getX();
-						ey = (int) end.getY();
-						tx = ex - sx;
-						ty = ey - ey;
-						g.drawRect(sx, sy, ex - sx,ey - sy);
-
-					}
-				}
-				for(int i = 0; i < circleEnd.size();i++)
-				{
-					if(i < circleStart.size()){
-						Point start = circleStart.elementAt(i);
-						Point end = circleEnd.elementAt(i);
-						sx = (int) start.getX();
-						sy = (int) start.getY();
-						ex = (int) end.getX();
-						ey = (int) end.getY();
-						tx = ex - sx;
-						ty = ey - ey;
-						g.drawOval(sx, sy, ex - sx,ey - sy);
-					}
-				}		
+		for (FreeLine fLines : fLine) {
+        	if(fLines != null)
+        		fLines.drawFreeLine(g);
+        }
+        for(RightLine rLines : rLine){
+        	if(rLines != null)
+        		rLines.drawRightLine(g);
+        }
+        for(Square squ : squares){
+        	if(squ != null)
+        		squ.drawSquare(g);
+        }
+        for(Circle cir : circles){
+        	if(cir != null)
+        		cir.drawCircle(g);
+        }
 		
-			}			
-		
-		}//원
-		else if(selector == 4) //초기화
-		{
-			g.clearRect(0, 0, 500, 300);
-			freelines.clear();
-	        lineStart.clear();
-	        lineEnd.clear();
-	        squareStart.clear();
-	        squareEnd.clear();
-	        circleStart.clear();
-	        circleEnd.clear();
-		}
 
 	}
 }
