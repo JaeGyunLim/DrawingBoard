@@ -1,10 +1,7 @@
 package test;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -26,6 +23,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	public JButton linebtn;
 	public JButton nemobtn;
 	public JButton onebtn;
+	public JButton trianglebtn;
 	public JButton colorbtn;
 	public JButton eraserbtn;
 	public JButton boldbtn;
@@ -67,6 +65,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		linebtn = new JButton("");
 		nemobtn = new JButton("");
 		onebtn = new JButton("");
+		trianglebtn = new JButton("");
 		colorbtn = new JButton("");
 		eraserbtn = new JButton("");
 		boldbtn = new JButton("º¯°æ");
@@ -78,6 +77,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		linebtn.setIcon(new ImageIcon(Test.class.getResource("/test/line-icon.png")));
 		nemobtn.setIcon(new ImageIcon(Test.class.getResource("/test/square-icon.png")));
 		onebtn.setIcon(new ImageIcon(Test.class.getResource("/test/oval-icon.png")));
+		trianglebtn.setIcon(new ImageIcon(Test.class.getResource("/test/Triangle-icon.png")));
 		colorbtn.setIcon(new ImageIcon(Test.class.getResource("/test/Color-icon.png")));
 		eraserbtn.setIcon(new ImageIcon(Test.class.getResource("/test/Eraser-icon.png")));
 		
@@ -85,6 +85,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		drawBar.add(linebtn);
 		drawBar.add(nemobtn);
 		drawBar.add(onebtn);
+		drawBar.add(trianglebtn);
 		toolBar.add(colorbtn);
 		toolBar.add(eraserbtn);
 		boldBar.add(boldText);
@@ -96,6 +97,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		linebtn.addActionListener(this);
 		nemobtn.addActionListener(this);
 		onebtn.addActionListener(this);
+		trianglebtn.addActionListener(this);
 		colorbtn.addActionListener(this);
 		eraserbtn.addActionListener(this);
 		boldbtn.addActionListener(this);
@@ -203,7 +205,10 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		}
 		else if(selectbtn == onebtn){
 			selector = 3;		
-		}		
+		}
+		else if(selectbtn == trianglebtn){
+			selector = 4;
+		}
 		else if(selectbtn == colorbtn){
 			color = JColorChooser.showDialog(null, "Color", Color.BLACK);
 		}		
@@ -241,13 +246,14 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
         	if(tri != null)
         		tri.drawTriangle(g);
         }	
-        if(selector == 4)
+        if(selector == 5)
         {
         	g.clearRect(0, 0, 500, 300);
         	fLine.clear();
         	rLine.clear();
         	squares.clear();
         	circles.clear();
+        	triangles.clear();
         }
 		
 
