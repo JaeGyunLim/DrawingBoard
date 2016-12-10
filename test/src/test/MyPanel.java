@@ -67,7 +67,6 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		colorbtn = new JButton("");
 		eraserbtn = new JButton("");
 		boldbtn = new JButton("변경");
-		eraSelBtn = new JButton("전체 지우기");
 		
 		boldText = new JTextField();
 		boldText.setText(bold + "");
@@ -97,12 +96,10 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		colorbtn.addActionListener(this);
 		eraserbtn.addActionListener(this);
 		boldbtn.addActionListener(this);
-		eraSelBtn.addActionListener(this);
-		
+
 		this.add(drawBar);
 		this.add(toolBar);
 		this.add(boldBar);
-		this.add(eraSelBtn);
 	}
 
 	@Override
@@ -159,6 +156,8 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 			circle.addPoint(e.getX(), e.getY(),color,bold);
 		}
 		
+
+		
 	}
 
 	@Override
@@ -205,10 +204,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		{
 			bold = (Integer.parseInt(boldText.getText().trim()));
 		}		
-		else if(selectbtn == eraSelBtn)
-		{
-			selector = 5;
-		}
+
 	}
 	
 	public void paintComponent(Graphics g){
@@ -230,6 +226,14 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
         for(Circle cir : circles){
         	if(cir != null)
         		cir.drawCircle(g);
+        }
+        if(selector == 4)
+        {
+        	g.clearRect(0, 0, 500, 300);
+        	fLine.clear();
+        	rLine.clear();
+        	squares.clear();
+        	circles.clear();
         }
 		
 
