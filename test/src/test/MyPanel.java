@@ -55,6 +55,9 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 	public Vector<Circle> circles = new Vector<Circle>();
 	public Circle circle;//¿ø
 	
+	public Vector<Triangle> triangles = new Vector<Triangle>();
+	public Triangle triangle;//»ï°¢Çü
+	
 	public MyPanel(){
 		drawBar = new JToolBar();
 		toolBar = new JToolBar();
@@ -155,7 +158,11 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 			circles.add(circle);
 			circle.addPoint(e.getX(), e.getY(),color,bold);
 		}
-		
+		else if(selector == 4){
+			triangle = new Triangle();
+			triangles.add(triangle);
+			triangle.addPoint(e.getX(), e.getY(),color,bold);
+		}
 
 		
 	}
@@ -171,6 +178,9 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 		}
 		else if(selector == 3){
 			circle.addPoint(e.getX(), e.getY(),color,bold);
+		}
+		else if(selector == 4){
+			triangle.addPoint(e.getX(), e.getY(),color,bold);
 		}
 		repaint();
 	}
@@ -198,7 +208,7 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
 			color = JColorChooser.showDialog(null, "Color", Color.BLACK);
 		}		
 		else if(selectbtn == eraserbtn){
-			selector = 4;
+			selector = 5;
 		}
 		else if(selectbtn == boldbtn)
 		{
@@ -227,6 +237,10 @@ public class MyPanel extends JPanel  implements ActionListener,MouseListener,Mou
         	if(cir != null)
         		cir.drawCircle(g);
         }
+        for(Triangle tri : triangles){
+        	if(tri != null)
+        		tri.drawTriangle(g);
+        }	
         if(selector == 4)
         {
         	g.clearRect(0, 0, 500, 300);
