@@ -1,6 +1,8 @@
 package test;
 import java.awt.Color;
+import java.awt.FileDialog;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -28,13 +31,33 @@ public class MyFrame extends JFrame{
 		this.setVisible(true);
 		
 		mp.setBackground(Color.WHITE);
-		
+		JLabel labela = new JLabel(); 
 		JButton savebtn = new JButton("");
+		JButton loadbtn = new JButton("불러오기");
+		
 		JToolBar saveBar = new JToolBar();
 		saveBar.add(savebtn);
+		saveBar.add(loadbtn);
 		savebtn.setIcon(new ImageIcon(Test.class.getResource("/test/save-icon.png")));
 		
 		mp.add(saveBar);
+		
+		loadbtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				FileDialog fileDialog = new FileDialog(MyFrame.this, "파일 열기",FileDialog.LOAD);
+				fileDialog.setVisible(true);
+				String path = fileDialog.getDirectory() + fileDialog.getFile();
+				System.out.println(path);
+				Toolkit toolkit = Toolkit.getDefaultToolkit();
+				Image image = toolkit.getImage(path);
+				JLabel label = new JLabel(new ImageIcon(image));
+				mp.add(label);
+			}
+		});
+		
 		
 		savebtn.addActionListener(new ActionListener() {
 			
